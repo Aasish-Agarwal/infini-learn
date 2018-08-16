@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #define FIRST_BLOCK_SIZE 3 
 #define BLOCK_SIZE_MULTIPLIER 2 
 
@@ -25,7 +26,7 @@ void InitializeFirstBlock() {
     last_element_of_block = block_size;
 }
 
-void FindWinningAmount() {
+void CalculateWinningAmount() {
     InitializeFirstBlock();
     while ( NumberToBetIsNotInCurrentBlock() )
     {
@@ -43,18 +44,21 @@ void SetTheNumberToBet(long target) {
     bettingOnNumber = target;
 }
 
-
 void OptimizedAlgoTestSuite() {
+    printf("%10s\t%10s\t%6s\n","Bet", "Money", "Time" );
     for (long target = 100; target <= 1000000000 ; target = target * 10 )
     {
        SetTheNumberToBet(target); 
-       FindWinningAmount();
-       printf("target:\t%10ld\tmoney\t%10ld\n", target, GetWinningAmount() );
+       clock_t start = clock(), diff;
+       CalculateWinningAmount();
+       diff = clock() - start;
+       int msec = diff * 1000 / CLOCKS_PER_SEC;
+       printf("%10ld\t%10ld\t%3d.%d\n", target, GetWinningAmount(),msec/1000, msec%1000 );
+       //printf("target:\t%10ld\tmoney\t%10ld\ttime: %3d sec %3d msec\n", target, GetWinningAmount(),msec/1000, msec%1000 );
     }
 }
 
-void ExecuteGFGTestSuite()
-{
+void ExecuteGFGTestSuite() {
     int T = 0 ;
     long N = 0;
     scanf("%d",&T);
@@ -62,14 +66,14 @@ void ExecuteGFGTestSuite()
     while ( T-- ) {
         scanf("%ld",&N);
         SetTheNumberToBet(N);
-        FindWinningAmount();
+        CalculateWinningAmount();
         printf("%ld\n",GetWinningAmount());
     }
 }
 
 int main ()
 {
-    //OptimizedAlgoTestSuite();
+    OptimizedAlgoTestSuite();
     ExecuteGFGTestSuite();
     return 0;
 }
